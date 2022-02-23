@@ -28,7 +28,8 @@
   - users.module.ts       -> Module entrypoint
   - users.controller.ts   -> Module route controller
   - users.service.ts      -> Module services
-  - user.entity.ts        -> User object model
+  - [entities]            -> Entities
+    - user.entity.ts         -> User entity
   - [dto]                 -> Data Transfer Objects
     - create-user.dto.ts     -> Create user DTO
     - update-user.dto.ts     -> Create user DTO
