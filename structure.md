@@ -1,4 +1,4 @@
-## Project Structure
+### Project Structure
 
 ```
 [src]
@@ -21,7 +21,7 @@
   - [email]            -> Contain email module
 [config]               -> Contain the app config
 ```
-## Module Structure
+### Module Structure
 
 ```
 [users]
@@ -34,3 +34,26 @@
     - create-user.dto.ts     -> Create user DTO
     - update-user.dto.ts     -> Create user DTO
 ```
+
+### CRUD
+
+Create, Read, Update, Delete
+  -> Four functions that are necessary to implement a persistent storage application.
+
+### HTTP Methods
+
+HTTP defines a set of request methods to indicate the desired action to be performed for a given resource. 
+
+The primary or most commonly-used HTTP methods are POST, GET, PUT, PATCH, and DELETE. These methods correspond to create, read, update, and delete (or CRUD) operations, respectively.
+
+```
+  Method  | Crud Operation  
+  ------- | ---------------
+  GET     | Read
+  POST    | Create
+  PATCH   | Update (Partial)
+  DELETE  | Delete 
+  PUT     | Update/Replace     
+```
+
+For more information: Read [HTTP request methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
