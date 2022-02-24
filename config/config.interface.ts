@@ -6,7 +6,7 @@ export enum ENVIRONMENT {
 export interface Configuration {
   environment: ENVIRONMENT;
 
-  'api-server': {
+  apiServer: {
     port: number | string;
   };
 

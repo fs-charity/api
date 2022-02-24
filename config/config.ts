@@ -13,7 +13,7 @@ export const CONFIG: Configuration = {
     process.env.ENVIRONMENT == 'production'
       ? ENVIRONMENT.PRODUCTION
       : ENVIRONMENT.DEVELOPMENT,
-  'api-server': {
+  apiServer: {
     port: process.env.API_SERVER_PORT ?? 3000,
   },
   security: {
