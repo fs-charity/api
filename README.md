@@ -24,12 +24,12 @@ Create a .env file. You can refer to the .env.example, but populate it with your
 
 ## Prisma Setup
 
-1. Run prisma migrate for the first time. A prisma/migrations folder will be generated. 
+Run prisma migrate. It will replay the migration history
 ```
-yarn prisma migrate dev --name init
+yarn prisma migrate dev
 ```
 
-2. Remove `prisma/migrations` from the .gitignore file. If you plan to use this code for your own project, it is best practice to include the migrations history in your repository to mantain a single source of truth. 
+If you plan to use this code for your own project, it is best practice to include the migrations history in your repository to mantain a single source of truth. 
 
 Read more: [Prisma Migration](https://www.prisma.io/docs/concepts/components/prisma-migrate)
 ## Running the app
