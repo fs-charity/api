@@ -9,7 +9,7 @@ export class UsersService {
 
   create(createUserDto: CreateUserDto) {
     return this.prismaService.user.create({
-      data: { name: 'Ali', email: 'ali@email.com', password: '1234567' },
+      data: createUserDto,
     });
   }
 

@@ -17,6 +17,7 @@
     - [filters]           -> Exception filters
     - [guards]            -> Guard classes
     - [decorators]        -> Decorators
+    - [validators]        -> Validators
 [libs]                 -> Contain shared libraries
   - [email]            -> Contain email module
 [config]               -> Contain the app config
