@@ -11,17 +11,15 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     createUserDto.password = hashPassword(createUserDto.password);
-    let user = await this.prismaService.user.create({
-      data: createUserDto,
-    });
-
-    let newObj: User = new User(user);
-    return newObj;
+    return new User(
+      await this.prismaService.user.create({
+        data: createUserDto,
+      }),
+    );
   }
 
   findAll() {
-    let users = this.prismaService.user.findMany();
-    return users;
+    return this.prismaService.user.findMany();
   }
 
   findOne(id: number) {
