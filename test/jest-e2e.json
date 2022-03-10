@@ -14,6 +14,8 @@
     "@app/db/(.*)": "<rootDir>/../libs/db/src/$1",
     "@app/db": "<rootDir>/../libs/db/src",
     "@app/config/(.*)": "<rootDir>/../libs/config/src/$1",
-    "@app/config": "<rootDir>/../libs/config/src"
+    "@app/config": "<rootDir>/../libs/config/src",
+    "@app/utils/(.*)": "<rootDir>/../libs/utils/src/$1",
+    "@app/utils": "<rootDir>/../libs/utils/src"
   }
 }
