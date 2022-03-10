@@ -12,6 +12,8 @@
   },
   "moduleNameMapper": {
     "@app/db/(.*)": "<rootDir>/../libs/db/src/$1",
-    "@app/db": "<rootDir>/../libs/db/src"
+    "@app/db": "<rootDir>/../libs/db/src",
+    "@app/config/(.*)": "<rootDir>/../libs/config/src/$1",
+    "@app/config": "<rootDir>/../libs/config/src"
   }
 }

@@ -19,8 +19,8 @@
     - [decorators]        -> Decorators
     - [validators]        -> Validators
 [libs]                 -> Contain shared libraries
+  - [config]               -> Contain the app config
   - [email]            -> Contain email module
-[config]               -> Contain the app config
 ```
 ### Module Structure
 
