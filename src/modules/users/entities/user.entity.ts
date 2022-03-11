@@ -1,4 +1,4 @@
-import { Role, User as PrismaUser } from '@prisma/client';
+import { Prisma, Role, User as PrismaUser } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 export class User implements Partial<PrismaUser> {
   constructor(user: Partial<User>) {
@@ -14,3 +14,12 @@ export class User implements Partial<PrismaUser> {
   password?: string;
   roles: Role[];
 }
+
+export const UserSelectDefaultValue: Prisma.UserSelect = {
+  id: true,
+  email: true,
+  name: true,
+  phone: true,
+  password: false,
+  roles: true,
+};
