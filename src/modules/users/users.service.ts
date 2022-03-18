@@ -9,39 +9,40 @@ import { User, UserSelectDefaultValue } from './entities/user.entity';
 export class UsersService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     createUserDto.password = hashPassword(createUserDto.password);
-    return this.prismaService.user.create({
+    return (await this.prismaService.user.create({
       data: createUserDto,
       select: UserSelectDefaultValue,
-    });
+    })) as User;
   }
 
-  findAll() {
-    return this.prismaService.user.findMany({
+  async findAll() {
+    return (await this.prismaService.user.findMany({
       select: UserSelectDefaultValue,
-    });
+    })) as Array<User>;
   }
 
-  findOne(id: number) {
-    return this.prismaService.user.findUnique({
+  async findOne(id: number) {
+    return (await this.prismaService.user.findUnique({
       where: { id: id },
       select: UserSelectDefaultValue,
-    });
+    })) as User;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.prismaService.user.update({
+  async updateOne(id: number, updateUserDto: UpdateUserDto) {
+    return (await this.prismaService.user.update({
       where: { id: id },
       data: updateUserDto,
       select: UserSelectDefaultValue,
-    });
+    })) as User;
   }
 
-  remove(id: number) {
-    return this.prismaService.user.delete({
+  async removeOne(id: number) {
+    await this.prismaService.user.delete({
       where: { id: id },
       select: { id: true },
     });
+    return { message: 'User has been deleted' };
   }
 }

@@ -8,7 +8,7 @@ export class User implements Partial<PrismaUser> {
   id: number;
   email: string;
   name: string;
-  phone: string;
+  phone?: string;
 
   @Exclude()
   password?: string;
