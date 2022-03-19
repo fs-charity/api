@@ -1,16 +1,16 @@
 import * as crypto from 'crypto';
 
-export function hashPassword(rawPassword: string) {
+export function hashString(rawString: string) {
   return crypto
     .createHash('sha1')
-    .update(rawPassword)
+    .update(rawString)
     .digest()
     .toString('base64');
 }
 
-export function comparePassword(
-  rawPassword: string,
-  hashedPassword: string,
+export function compareHashedString(
+  originalString: string,
+  hashedString: string,
 ): boolean {
-  return rawPassword == hashPassword(hashedPassword);
+  return hashedString == hashString(originalString);
 }

@@ -11,8 +11,10 @@ export interface Configuration {
   };
 
   security: {
-    jwtSecret: string;
+    accessTokenSecret: string;
     accessTokenExpiry: string;
+    refreshTokenSecret: string;
+    refreshTokenExpiry: string;
   };
 
   email: {

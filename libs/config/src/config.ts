@@ -17,8 +17,11 @@ export const CONFIG: Configuration = {
     port: process.env.API_SERVER_PORT ?? 3000,
   },
   security: {
-    jwtSecret: process.env.JWT_SECRET ?? 'JwtSecret',
-    accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY ?? '1h',
+    accessTokenSecret: process.env.ACCESS_TOKEN_SECRET ?? 'AccessTokenSecret',
+    accessTokenExpiry: process.env.ACCESS_TOKEN_EXPIRY ?? '15m',
+    refreshTokenSecret:
+      process.env.REFRESH_TOKEN_SECRET ?? 'RefreshTokenSecret',
+    refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY ?? '7d',
   },
   email: {
     name: process.env.EMAIL_NAME ?? 'Charity App',
