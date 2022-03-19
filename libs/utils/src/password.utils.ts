@@ -12,5 +12,5 @@ export function comparePassword(
   rawPassword: string,
   hashedPassword: string,
 ): boolean {
-  return rawPassword == hashPassword(hashedPassword);
+  return hashedPassword == hashPassword(rawPassword);
 }
