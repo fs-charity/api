@@ -80,8 +80,8 @@ export class AuthService {
     userId: number,
     refreshToken: string,
     session: string,
-    ipAddress: string,
-    userAgent: string,
+    ipAddress?: string,
+    userAgent?: string,
   ): Promise<AuthToken> {
     // Find user
 
@@ -148,37 +148,51 @@ export class AuthService {
   async updateRefreshToken(
     userId: number,
     refreshToken: string,
-    session: string,
-    ipAddress: string,
-    userAgent: string,
+    sessionId: string,
+    ipAddress?: string,
+    userAgent?: string,
   ): Promise<void> {
     const hashedRt = hashString(refreshToken);
-    const hashedSn = hashString(session);
+    const hashedSn = hashString(sessionId);
     const expirationDate = addMilliseconds(
       new Date(),
       msParse(CONFIG.security.refreshTokenExpiry),
     );
 
-    await this.prismaService.session.upsert({
+    let session = await this.prismaService.session.findUnique({
       where: {
         unique_session: {
           userId: userId,
           hashedSn: hashedSn,
         },
       },
-      create: {
-        userId: userId,
-        hashedRt: hashedRt,
-        hashedSn: hashedSn,
-        ipAddress: ipAddress,
-        userAgent: userAgent,
-        expirationDate: expirationDate,
-      },
-      update: {
-        hashedRt: hashedRt,
-        expirationDate: expirationDate,
+      select: {
+        id: true,
       },
     });
+
+    if (session) {
+      await this.prismaService.session.update({
+        where: {
+          id: session.id,
+        },
+        data: {
+          hashedRt: hashedRt,
+          expirationDate: expirationDate,
+        },
+      });
+    } else {
+      await this.prismaService.session.create({
+        data: {
+          userId: userId,
+          hashedRt: hashedRt,
+          hashedSn: hashedSn,
+          ipAddress: ipAddress,
+          userAgent: userAgent,
+          expirationDate: expirationDate,
+        },
+      });
+    }
   }
 
   /**

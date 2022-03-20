@@ -5,11 +5,12 @@ import {
 } from '@app/casl';
 import {
   Body,
-  ConsoleLogger,
   Controller,
+  ForbiddenException,
   Get,
   Post,
   Req,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Payload } from 'src/common/decorators';
@@ -22,19 +23,28 @@ import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { JwtPayload, JwtPayloadWithRefreshToken } from './entity';
 import * as crypto from 'crypto';
+import { add } from 'date-fns';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
   @Post('login')
-  login(@Body() authLogin: AuthLoginDto, @Req() req: any) {
-    const sessionId = req.session.get('sessionId');
+  login(
+    @Body() authLogin: AuthLoginDto,
+    @Req() req: any,
+    @Res({ passthrough: true }) res: any,
+  ) {
+    let sessionId = req.cookies['sessionId'];
     if (!sessionId) {
-      req.session.set('sessionId', crypto.randomUUID());
+      sessionId = crypto.randomUUID();
     }
+    res.setCookie('sessionId', sessionId, {
+      expires: add(new Date(), { years: 1 }),
+    });
     const ipAddress = req.clientIp;
     const userAgent = req.headers['user-agent'];
+
     return this.authService.login(authLogin, sessionId, ipAddress, userAgent);
   }
 
@@ -42,23 +52,36 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard, CaslPoliciesGuard)
   @CheckPolicies(SessionManagePolicy())
   @Get('refresh')
-  refresh(@Payload() payload: JwtPayloadWithRefreshToken, @Req() req: any) {
-    const sessionId = req.session.get('sessionId');
-    const ipAddress = req.clientIp;
-    const userAgent = req.headers['user-agent'];
+  refresh(
+    @Payload() payload: JwtPayloadWithRefreshToken,
+    @Req() req: any,
+    @Res({ passthrough: true }) res: any,
+  ) {
+    const sessionId = req.cookies['sessionId'];
 
+    if (!sessionId) throw new ForbiddenException();
+
+    res.setCookie('sessionId', sessionId, {
+      expires: add(new Date(), { years: 1 }),
+    });
     return this.authService.refreshTokens(
       payload.sub,
       payload.refreshToken,
       sessionId,
-      ipAddress,
-      userAgent,
     );
   }
 
   @UseGuards(AccessTokenGuard)
   @Get('logout')
-  logout(@Payload() payload: JwtPayload) {
-    return this.authService.logout(payload.sub, 'session');
+  logout(
+    @Payload() payload: JwtPayload,
+    @Req() req: any,
+    @Res({ passthrough: true }) res: any,
+  ) {
+    const sessionId = req.cookies['sessionId'];
+
+    res.clearCookie('sessionId', { path: '/auth' });
+
+    return this.authService.logout(payload.sub, sessionId);
   }
 }

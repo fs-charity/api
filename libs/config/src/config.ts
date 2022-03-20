@@ -22,6 +22,7 @@ export const CONFIG: Configuration = {
     refreshTokenSecret:
       process.env.REFRESH_TOKEN_SECRET ?? 'RefreshTokenSecret',
     refreshTokenExpiry: process.env.REFRESH_TOKEN_EXPIRY ?? '7d',
+    cookieSecret: process.env.COOKIE_SECRET ?? 'CookieSecret',
   },
   email: {
     name: process.env.EMAIL_NAME ?? 'Charity App',

@@ -9,7 +9,7 @@ import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters';
 import fastifyHelmet from 'fastify-helmet';
 import { ClientIpMiddleWare } from './common/middlewares/client-ip.middleware';
-import secureSession from 'fastify-secure-session';
+import fastifyCookie from 'fastify-cookie';
 async function bootstrap() {
   const fastify = new FastifyAdapter({ ignoreTrailingSlash: true });
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -34,9 +34,8 @@ async function bootstrap() {
 
   app.enableCors({ origin: '*' });
 
-  app.register(secureSession, {
-    secret: 'averylogphrasebiggerthanthirtytwochars',
-    salt: 'mq9hDxBVDbspDR6n',
+  app.register(fastifyCookie, {
+    secret: CONFIG.security.cookieSecret,
   });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));

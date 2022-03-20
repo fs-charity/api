@@ -15,6 +15,7 @@ export interface Configuration {
     accessTokenExpiry: string;
     refreshTokenSecret: string;
     refreshTokenExpiry: string;
+    cookieSecret: string;
   };
 
   email: {

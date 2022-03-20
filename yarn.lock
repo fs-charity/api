@@ -2545,9 +2545,9 @@ fast-safe-stringify@2.1.1, fast-safe-stringify@^2.0.8, fast-safe-stringify@^2.1.
   resolved "https://registry.npmjs.org/fast-safe-stringify/-/fast-safe-stringify-2.1.1.tgz"
   integrity sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==
 
-fastify-cookie@^5.0.0:
+fastify-cookie@^5.6.0:
   version "5.6.0"
-  resolved "https://registry.npmjs.org/fastify-cookie/-/fastify-cookie-5.6.0.tgz"
+  resolved "https://registry.yarnpkg.com/fastify-cookie/-/fastify-cookie-5.6.0.tgz#90f098779438524e7ac6624c00ff5787b865d313"
   integrity sha512-zmZhw1CugavEZjFToMDz6FTawXw9QQ6bJ1vhhalMLYTbhog8C42+1jIWENKjV6PkiERdDRhXahj9MiYSVNynDw==
   dependencies:
     cookie-signature "^1.1.0"
@@ -2585,15 +2585,6 @@ fastify-plugin@^3.0.0, fastify-plugin@^3.0.1:
   version "3.0.1"
   resolved "https://registry.npmjs.org/fastify-plugin/-/fastify-plugin-3.0.1.tgz"
   integrity sha512-qKcDXmuZadJqdTm6vlCqioEbyewF60b/0LOFCcYN1B6BIZGlYJumWWOYs70SFYLDAH4YqdE1cxH/RKMG7rFxgA==
-
-fastify-secure-session@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.npmjs.org/fastify-secure-session/-/fastify-secure-session-3.0.0.tgz"
-  integrity sha512-UOfRT2zsJdsy+Dx4Ye3EkLjsMJ7iJ/iqNWiHOjMrPH5N02m+PtovxwpLklfD8G+AavxpL+3js93RuZz6R595Sw==
-  dependencies:
-    fastify-cookie "^5.0.0"
-    fastify-plugin "^3.0.0"
-    sodium-native "^3.0.0"
 
 fastify@3.27.4:
   version "3.27.4"
@@ -4088,11 +4079,6 @@ node-fetch@^2.6.1:
   dependencies:
     whatwg-url "^5.0.0"
 
-node-gyp-build@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.3.0.tgz"
-  integrity sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q==
-
 node-int64@^0.4.0:
   version "0.4.0"
   resolved "https://registry.npmjs.org/node-int64/-/node-int64-0.4.0.tgz"
@@ -4830,13 +4816,6 @@ slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
-
-sodium-native@^3.0.0:
-  version "3.3.0"
-  resolved "https://registry.npmjs.org/sodium-native/-/sodium-native-3.3.0.tgz"
-  integrity sha512-rg6lCDM/qa3p07YGqaVD+ciAbUqm6SoO4xmlcfkbU5r1zIGrguXztLiEtaLYTV5U6k8KSIUFmnU3yQUSKmf6DA==
-  dependencies:
-    node-gyp-build "^4.3.0"
 
 sonic-boom@^1.0.2:
   version "1.4.1"
