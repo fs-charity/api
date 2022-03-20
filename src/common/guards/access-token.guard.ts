@@ -17,7 +17,7 @@ export class AccessTokenGuard extends AuthGuard('at') {
       context.getClass(),
     ]);
 
-    // console.log(isPublic);
+    let req = context.switchToHttp().getRequest();
     if (isPublic) return true;
 
     return super.canActivate(context);

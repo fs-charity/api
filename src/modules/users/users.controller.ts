@@ -20,6 +20,7 @@ import {
   UserReadPolicy,
   UserUpdatePolicy,
 } from '@app/casl';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('users')
@@ -27,8 +28,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UseGuards(CaslPoliciesGuard)
-  @CheckPolicies(UserCreatePolicy())
+  @Public()
+  // @UseGuards(CaslPoliciesGuard)
+  // @CheckPolicies(UserCreatePolicy())
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

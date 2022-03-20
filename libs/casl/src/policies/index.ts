@@ -1,2 +1,2 @@
 export * from './user.policies';
-export * from './refresh-token.policies';
+export * from './session.policies';

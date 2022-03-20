@@ -22,8 +22,8 @@ export class CaslAbilityFactory {
       can(CaslAction.Manage, 'all'); // read-write access to everything
     } else if (user.roles.includes(Role.USER)) {
       can(CaslAction.Update, 'User', { id: user.sub });
-      can(CaslAction.Update, 'RefreshToken', { userId: user.sub });
-      can(CaslAction.Delete, 'RefreshToken', { userId: user.sub });
+      can(CaslAction.Update, 'Session', { userId: user.sub });
+      can(CaslAction.Delete, 'Session', { userId: user.sub });
     }
 
     return build({

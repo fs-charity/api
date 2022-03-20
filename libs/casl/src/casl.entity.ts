@@ -1,9 +1,9 @@
-import { RefreshToken, User } from '@prisma/client';
+import { Session, User } from '@prisma/client';
 import { PrismaAbility, Subjects, PrismaQuery, Model } from '@casl/prisma';
 
 export class SubjectRecord {
   User: User;
-  RefreshToken: RefreshToken;
+  Session: Session;
   all: 'all';
 }
 

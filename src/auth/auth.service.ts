@@ -8,9 +8,11 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
+import { addMilliseconds } from 'date-fns';
 import { User, UserSelectDefaultValue } from '../modules/users';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthToken, JwtPayload } from './entity';
+import * as msParse from 'ms';
 
 /**
  * Service for authenticating user
@@ -27,7 +29,12 @@ export class AuthService {
    * Throws an error when user is not found or password
    * doesn't match
    */
-  async login(authLogin: AuthLoginDto): Promise<AuthToken> {
+  async login(
+    authLogin: AuthLoginDto,
+    session: string,
+    ipAddress: string,
+    userAgent: string,
+  ): Promise<AuthToken> {
     //  Get user and password
 
     const user = (await this.prismaService.user.findUnique({
@@ -50,7 +57,13 @@ export class AuthService {
 
     // Update refresh token
 
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    await this.updateRefreshToken(
+      user.id,
+      tokens.refreshToken,
+      session,
+      ipAddress,
+      userAgent,
+    );
 
     // Delete password from user object
 
@@ -66,6 +79,9 @@ export class AuthService {
   async refreshTokens(
     userId: number,
     refreshToken: string,
+    session: string,
+    ipAddress: string,
+    userAgent: string,
   ): Promise<AuthToken> {
     // Find user
 
@@ -76,22 +92,36 @@ export class AuthService {
       select: {
         id: true,
         email: true,
-        refreshToken: true,
         roles: true,
       },
     });
 
     // Throw if user or refresh token is null
 
-    if (!user || !user.refreshToken)
-      throw new ForbiddenException('User not found');
+    if (!user) throw new ForbiddenException('User not found');
+
+    // Get session
+
+    const hashedSn = hashString(session);
+
+    const _session = await this.prismaService.session.findUnique({
+      where: {
+        unique_session: {
+          userId: userId,
+          hashedSn: hashedSn,
+        },
+      },
+      select: {
+        hashedRt: true,
+      },
+    });
 
     // Throw if invalid hash
 
     // console.log(refreshToken);
     // console.log(user.refreshToken);
 
-    if (!compareHashedString(refreshToken, user.refreshToken.hash))
+    if (!compareHashedString(refreshToken, _session.hashedRt))
       throw new ForbiddenException('Invalid token');
 
     // Get new tokens
@@ -100,7 +130,13 @@ export class AuthService {
 
     // Update refresh token
 
-    await this.updateRefreshToken(user.id, tokens.refreshToken);
+    await this.updateRefreshToken(
+      user.id,
+      tokens.refreshToken,
+      session,
+      ipAddress,
+      userAgent,
+    );
 
     return tokens;
   }
@@ -112,22 +148,35 @@ export class AuthService {
   async updateRefreshToken(
     userId: number,
     refreshToken: string,
+    session: string,
+    ipAddress: string,
+    userAgent: string,
   ): Promise<void> {
-    const hash = hashString(refreshToken);
+    const hashedRt = hashString(refreshToken);
+    const hashedSn = hashString(session);
+    const expirationDate = addMilliseconds(
+      new Date(),
+      msParse(CONFIG.security.refreshTokenExpiry),
+    );
 
-    await this.prismaService.user.update({
-      where: { id: userId },
-      data: {
-        refreshToken: {
-          upsert: {
-            create: {
-              hash: hash,
-            },
-            update: {
-              hash: hash,
-            },
-          },
+    await this.prismaService.session.upsert({
+      where: {
+        unique_session: {
+          userId: userId,
+          hashedSn: hashedSn,
         },
+      },
+      create: {
+        userId: userId,
+        hashedRt: hashedRt,
+        hashedSn: hashedSn,
+        ipAddress: ipAddress,
+        userAgent: userAgent,
+        expirationDate: expirationDate,
+      },
+      update: {
+        hashedRt: hashedRt,
+        expirationDate: expirationDate,
       },
     });
   }
@@ -163,11 +212,15 @@ export class AuthService {
    * Logout and clear refresh token from db
    */
 
-  async logout(userId: number): Promise<boolean> {
-    await this.prismaService.refreshToken
+  async logout(userId: number, session: string): Promise<boolean> {
+    const hashedSn = hashString(session);
+    await this.prismaService.session
       .delete({
         where: {
-          userId: userId,
+          unique_session: {
+            userId: userId,
+            hashedSn: hashedSn,
+          },
         },
       })
       .catch((e) => {
