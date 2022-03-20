@@ -28,6 +28,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/utils/tsconfig.lib.json"
       }
+    },
+    "casl": {
+      "type": "library",
+      "root": "libs/casl",
+      "entryFile": "index",
+      "sourceRoot": "libs/casl/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/casl/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

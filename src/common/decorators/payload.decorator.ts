@@ -10,6 +10,7 @@ export const Payload = createParamDecorator(
       sub: request.user.sub,
       email: request.user.email,
       refreshToken: request.user.refreshToken,
+      roles: request.user.roles,
     };
     return payload;
   },

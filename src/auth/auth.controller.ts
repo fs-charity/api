@@ -1,3 +1,8 @@
+import {
+  CaslPoliciesGuard,
+  CheckPolicies,
+  RefreshTokenManagePolicy,
+} from '@app/casl';
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Payload } from 'src/common/decorators';
 import { Public } from 'src/common/decorators/public.decorator';
@@ -20,9 +25,16 @@ export class AuthController {
   }
 
   @Public()
-  @UseGuards(RefreshTokenGuard)
+  @UseGuards(RefreshTokenGuard, CaslPoliciesGuard)
+  @CheckPolicies(RefreshTokenManagePolicy())
   @Get('refresh')
   refresh(@Payload() payload: JwtPayloadWithRefreshToken) {
     return this.authService.refreshTokens(payload.sub, payload.refreshToken);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('logout')
+  logout(@Payload() payload: JwtPayload) {
+    return this.authService.logout(payload.sub);
   }
 }

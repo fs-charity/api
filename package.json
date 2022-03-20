@@ -21,6 +21,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@casl/ability": "^5.4.3",
+    "@casl/prisma": "^1.0.1",
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/jwt": "^8.0.0",
@@ -89,7 +91,8 @@
     "moduleNameMapper": {
       "^@app/db(|/.*)$": "<rootDir>/libs/db/src/$1",
       "^@app/config(|/.*)$": "<rootDir>/libs/config/src/$1",
-      "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1"
+      "^@app/utils(|/.*)$": "<rootDir>/libs/utils/src/$1",
+      "^@app/casl(|/.*)$": "<rootDir>/libs/casl/src/$1"
     }
   }
 }

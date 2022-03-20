@@ -16,6 +16,8 @@
     "@app/config/(.*)": "<rootDir>/../libs/config/src/$1",
     "@app/config": "<rootDir>/../libs/config/src",
     "@app/utils/(.*)": "<rootDir>/../libs/utils/src/$1",
-    "@app/utils": "<rootDir>/../libs/utils/src"
+    "@app/utils": "<rootDir>/../libs/utils/src",
+    "@app/casl/(.*)": "<rootDir>/../libs/casl/src/$1",
+    "@app/casl": "<rootDir>/../libs/casl/src"
   }
 }

@@ -35,6 +35,12 @@
       ],
       "@app/utils/*": [
         "libs/utils/src/*"
+      ],
+      "@app/casl": [
+        "libs/casl/src"
+      ],
+      "@app/casl/*": [
+        "libs/casl/src/*"
       ]
     }
   }

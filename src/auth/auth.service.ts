@@ -7,6 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Role } from '@prisma/client';
 import { User, UserSelectDefaultValue } from '../modules/users';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthToken, JwtPayload } from './entity';
@@ -31,7 +32,7 @@ export class AuthService {
 
     const user = (await this.prismaService.user.findUnique({
       where: { email: authLogin.email },
-      select: { id: true, email: true, password: true },
+      select: { id: true, email: true, password: true, roles: true },
     })) as any;
 
     //  Throw if user not found
@@ -45,7 +46,7 @@ export class AuthService {
 
     // Get tokens
 
-    const tokens = this.getTokens(user.id, user.email);
+    const tokens = this.getTokens(user.id, user.email, user.roles);
 
     // Update refresh token
 
@@ -76,6 +77,7 @@ export class AuthService {
         id: true,
         email: true,
         refreshToken: true,
+        roles: true,
       },
     });
 
@@ -89,12 +91,12 @@ export class AuthService {
     // console.log(refreshToken);
     // console.log(user.refreshToken);
 
-    if (!compareHashedString(refreshToken, user.refreshToken))
+    if (!compareHashedString(refreshToken, user.refreshToken.hash))
       throw new ForbiddenException('Invalid token');
 
     // Get new tokens
 
-    const tokens = this.getTokens(user.id, user.email);
+    const tokens = this.getTokens(user.id, user.email, user.roles);
 
     // Update refresh token
 
@@ -116,7 +118,16 @@ export class AuthService {
     await this.prismaService.user.update({
       where: { id: userId },
       data: {
-        refreshToken: hash,
+        refreshToken: {
+          upsert: {
+            create: {
+              hash: hash,
+            },
+            update: {
+              hash: hash,
+            },
+          },
+        },
       },
     });
   }
@@ -125,10 +136,11 @@ export class AuthService {
    * Access token and refresh token generator
    */
 
-  getTokens(userId: number, email: string): AuthToken {
+  getTokens(userId: number, email: string, roles: Role[] = []): AuthToken {
     const payload: JwtPayload = {
       sub: userId,
       email: email,
+      roles: roles,
     };
 
     const accessToken = this.jwtService.sign(payload, {
@@ -145,5 +157,24 @@ export class AuthService {
       accessToken: accessToken,
       refreshToken: refreshToken,
     };
+  }
+
+  /**
+   * Logout and clear refresh token from db
+   */
+
+  async logout(userId: number): Promise<boolean> {
+    await this.prismaService.refreshToken
+      .delete({
+        where: {
+          userId: userId,
+        },
+      })
+      .catch((e) => {
+        if (e.code === 'P2025') return true;
+        else throw new ForbiddenException('Unable to logout');
+      });
+
+    return true;
   }
 }
