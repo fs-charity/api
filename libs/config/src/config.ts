@@ -26,7 +26,7 @@ export const CONFIG: Configuration = {
   },
   email: {
     name: process.env.EMAIL_NAME ?? 'Charity App',
-    from: process.env.EMAIL_FROM ?? 'farhan.webdev@gmail.com',
+    from: process.env.EMAIL_FROM ?? 'email@email.com',
     retries: int(process.env.EMAIL_FAIL_RETRIES, 3),
     ses: {
       accessKeyId: process.env.EMAIL_SES_ACCESS_KEY_ID ?? '',

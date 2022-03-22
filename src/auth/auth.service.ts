@@ -2,17 +2,13 @@ import { CONFIG } from '@app/config';
 import { PrismaService } from '@app/db';
 import { compareHashedString, hashString } from '@app/utils';
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
-  NotAcceptableException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
 import { add, addMilliseconds } from 'date-fns';
-import { User, UserSelectDefaultValue } from '../modules/users';
 import { AuthLoginDto, AuthSignupDto } from './dto/auth.dto';
 import { AuthToken, JwtPayload } from './entity';
 import * as msParse from 'ms';

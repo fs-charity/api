@@ -8,7 +8,6 @@ import {
   Controller,
   ForbiddenException,
   Get,
-  Param,
   Post,
   Query,
   Req,
