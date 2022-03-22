@@ -41,6 +41,18 @@
       ],
       "@app/casl/*": [
         "libs/casl/src/*"
+      ],
+      "@app/mail-sender": [
+        "libs/mail-sender/src"
+      ],
+      "@app/mail-sender/*": [
+        "libs/mail-sender/src/*"
+      ],
+      "@app/types": [
+        "libs/types/src"
+      ],
+      "@app/types/*": [
+        "libs/types/src/*"
       ]
     }
   }

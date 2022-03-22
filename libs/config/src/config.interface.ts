@@ -22,19 +22,10 @@ export interface Configuration {
     name: string;
     from: string;
     retries: number;
-    ses?: {
+    ses: {
       accessKeyId: string;
       secretAccessKey: string;
       region: string;
-    };
-    transport?: {
-      host: string;
-      port: number;
-      secure: boolean;
-      auth: {
-        user: string;
-        pass: string;
-      };
     };
   };
 
@@ -48,5 +39,22 @@ export interface Configuration {
 
   logger: {
     enable: boolean;
+  };
+
+  project: {
+    name: string;
+    address: string;
+    logoUrl: string;
+    slogan: string;
+    socials: Array<string[]>;
+    homeUrl: string;
+    mailVerificationUrl: string;
+    mailChangeUrl: string;
+    resetPasswordUrl: string;
+    termsOfServiceUrl: string;
+  };
+
+  theme: {
+    color: string;
   };
 }

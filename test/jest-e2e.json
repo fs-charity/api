@@ -18,6 +18,10 @@
     "@app/utils/(.*)": "<rootDir>/../libs/utils/src/$1",
     "@app/utils": "<rootDir>/../libs/utils/src",
     "@app/casl/(.*)": "<rootDir>/../libs/casl/src/$1",
-    "@app/casl": "<rootDir>/../libs/casl/src"
+    "@app/casl": "<rootDir>/../libs/casl/src",
+    "@app/mail-sender/(.*)": "<rootDir>/../libs/mail-sender/src/$1",
+    "@app/mail-sender": "<rootDir>/../libs/mail-sender/src",
+    "@app/types/(.*)": "<rootDir>/../libs/types/src/$1",
+    "@app/types": "<rootDir>/../libs/types/src"
   }
 }

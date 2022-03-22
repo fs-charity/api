@@ -28,9 +28,9 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @Public()
-  // @UseGuards(CaslPoliciesGuard)
-  // @CheckPolicies(UserCreatePolicy())
+  // @Public()
+  @UseGuards(CaslPoliciesGuard)
+  @CheckPolicies(UserCreatePolicy())
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }

@@ -1,5 +1,6 @@
 ## Description
 
+This project is a starter 
 This project is part of the mentorship program I am conducting. This project is quite simple, but comprehensive enough to let you guys learn how to create and deploy a production ready application.
 
 For this project, we will build and deploy a NestJS application that will be used to serve the API needed to build a charity apps (which I will show how to build it using Flutter in another project).

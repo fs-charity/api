@@ -2,17 +2,23 @@ import { CONFIG } from '@app/config';
 import { PrismaService } from '@app/db';
 import { compareHashedString, hashString } from '@app/utils';
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
+  NotAcceptableException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@prisma/client';
-import { addMilliseconds } from 'date-fns';
+import { add, addMilliseconds } from 'date-fns';
 import { User, UserSelectDefaultValue } from '../modules/users';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthLoginDto, AuthSignupDto } from './dto/auth.dto';
 import { AuthToken, JwtPayload } from './entity';
 import * as msParse from 'ms';
+import { MailSenderService } from '@app/mail-sender';
+import { nanoid } from 'nanoid';
+import { ResponseBody } from '@app/types';
 
 /**
  * Service for authenticating user
@@ -22,7 +28,184 @@ export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private mailSenderService: MailSenderService,
   ) {}
+
+  /**
+   * New user signup
+   */
+  async signup(authSignup: AuthSignupDto): Promise<ResponseBody> {
+    let date = new Date();
+
+    // Find existing user
+
+    let user = await this.prismaService.user.findUnique({
+      where: { email: authSignup.email },
+      select: {
+        id: true,
+        emailVerified: true,
+        verificationToken: true,
+        verificationExpiry: true,
+      },
+    });
+
+    // If user exist
+    if (user) {
+      // Throw if user already registered and verified
+      if (user.emailVerified)
+        throw new ForbiddenException(
+          'The user has already been registered. Please proceed to login.',
+        );
+      // Throw if user already registered but not verified
+      else
+        throw new ForbiddenException(
+          'This email has already been registered. Please check your email and verify your email to login',
+        );
+    }
+
+    // Create user with verification token
+
+    const emailVerificationToken = nanoid();
+
+    user = await this.prismaService.user.create({
+      data: {
+        email: authSignup.email,
+        password: hashString(authSignup.password),
+        name: authSignup.name,
+        roles: [Role.USER],
+        verificationToken: emailVerificationToken,
+        verificationExpiry: add(date, { hours: 24 }),
+      },
+    });
+
+    // Send email with verification token
+
+    await this.mailSenderService.sendVerifyEmailMail(
+      authSignup.name,
+      authSignup.email,
+      emailVerificationToken,
+    );
+
+    // Return success message, check your email for verification
+
+    return {
+      statusCode: 201,
+      status: 'Created',
+      message:
+        'User has been created. Please check your email and verify your account.',
+    };
+  }
+
+  /**
+   * Resend email verification
+   */
+  async resendEmailVerification(email: string): Promise<ResponseBody> {
+    let date = new Date();
+
+    // Find existing user
+
+    let user = await this.prismaService.user.findUnique({
+      where: { email: email },
+      select: {
+        id: true,
+        name: true,
+        emailVerified: true,
+      },
+    });
+
+    // Throw if user doesn't exist
+
+    if (!user)
+      throw new NotFoundException(
+        "Unable to send verification email. User doesn't exist",
+      );
+
+    // Throw if user already verified
+    if (user.emailVerified)
+      throw new ForbiddenException(
+        'This account has already been verified. Please proceed to login.',
+      );
+
+    // Update user with new verification token
+
+    const emailVerificationToken = nanoid();
+
+    await this.prismaService.user.update({
+      where: {
+        email: email,
+      },
+      data: {
+        verificationToken: emailVerificationToken,
+        verificationExpiry: add(date, { hours: 24 }),
+      },
+    });
+
+    // Send email with verification token
+
+    await this.mailSenderService.sendVerifyEmailMail(
+      user.name,
+      email,
+      emailVerificationToken,
+    );
+
+    // Return success message, check your email for verification
+
+    return {
+      statusCode: 201,
+      status: 'Created',
+      message:
+        'A new verification link has been sent to your email. Please check your email and verify your account.',
+    };
+  }
+
+  /**
+   * Verify email
+   */
+
+  async verifyEmail(token: string) {
+    // Get user
+
+    let user = await this.prismaService.user.findUnique({
+      where: { verificationToken: token },
+      select: {
+        id: true,
+        email: true,
+        emailVerified: true,
+        verificationToken: true,
+        verificationExpiry: true,
+      },
+    });
+
+    // If user doesn't exist, throw error
+
+    if (!user) throw new NotFoundException('Invalid token');
+
+    // If user exist, but token has expired
+
+    if (user.verificationExpiry < new Date())
+      throw new ForbiddenException(
+        'The verification token is expired. Please request a new verification link',
+      );
+
+    // Verify user email
+
+    user = await this.prismaService.user.update({
+      where: { id: user.id },
+      data: {
+        emailVerified: true,
+        verificationToken: null,
+        verificationExpiry: null,
+      },
+    });
+
+    // Return success message
+
+    return {
+      statusCode: 200,
+      status: 'Success',
+      message: 'Email has been verified. You can proceed to login.',
+    };
+  }
 
   /**
    * Login service. Return a user object with a user token.
@@ -39,7 +222,13 @@ export class AuthService {
 
     const user = (await this.prismaService.user.findUnique({
       where: { email: authLogin.email },
-      select: { id: true, email: true, password: true, roles: true },
+      select: {
+        id: true,
+        email: true,
+        password: true,
+        roles: true,
+        emailVerified: true,
+      },
     })) as any;
 
     //  Throw if user not found
@@ -50,6 +239,13 @@ export class AuthService {
 
     if (!compareHashedString(authLogin.password, user.password))
       throw new ForbiddenException('Access Denied');
+
+    // Throw if user is not verified
+
+    if (!user.emailVerified)
+      throw new ForbiddenException(
+        'Your email is not verified. Pleas verify your email first',
+      );
 
     // Get tokens
 
@@ -117,9 +313,6 @@ export class AuthService {
     });
 
     // Throw if invalid hash
-
-    // console.log(refreshToken);
-    // console.log(user.refreshToken);
 
     if (!compareHashedString(refreshToken, _session.hashedRt))
       throw new ForbiddenException('Invalid token');

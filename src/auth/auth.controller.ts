@@ -8,7 +8,9 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -20,13 +22,31 @@ import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
 import { RefreshTokenGuard } from 'src/common/guards/refresh-token.guard';
 
 import { AuthService } from './auth.service';
-import { AuthLoginDto } from './dto/auth-login.dto';
+import { AuthEmailDto, AuthLoginDto, AuthSignupDto } from './dto/auth.dto';
 import { JwtPayload, JwtPayloadWithRefreshToken } from './entity';
 import * as crypto from 'crypto';
 import { add } from 'date-fns';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Public()
+  @Post('signup')
+  signup(@Body() authSignup: AuthSignupDto) {
+    return this.authService.signup(authSignup);
+  }
+
+  @Public()
+  @Get('verify')
+  verifyEmail(@Query('token') token: string) {
+    return this.authService.verifyEmail(token);
+  }
+
+  @Public()
+  @Post('resend')
+  resendEmailVerification(@Body() body: AuthEmailDto) {
+    return this.authService.resendEmailVerification(body.email);
+  }
 
   @Public()
   @Post('login')

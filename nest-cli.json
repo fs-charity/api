@@ -37,6 +37,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/casl/tsconfig.lib.json"
       }
+    },
+    "mail-sender": {
+      "type": "library",
+      "root": "libs/mail-sender",
+      "entryFile": "index",
+      "sourceRoot": "libs/mail-sender/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/mail-sender/tsconfig.lib.json"
+      }
+    },
+    "types": {
+      "type": "library",
+      "root": "libs/types",
+      "entryFile": "index",
+      "sourceRoot": "libs/types/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/types/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
