@@ -58,6 +58,94 @@ $ yarn test:e2e
 $ yarn test:cov
 ```
 
+## Endpoints
+#### Create User - POST /users
+
+Request
+```json
+{
+	"email": "user1@user.com",
+	"name": "User 1",
+	"phone": "0121234567",
+	"password": "password",
+	"roles": ["USER"]
+}
+```
+Response
+```json
+{
+  "id": 1,
+  "email": "user1@user.com",
+  "name": "User 1",
+  "phone": "0121234567",
+  "roles": [
+    "USER"
+  ]
+}
+```
+
+#### Get All Users - GET /users
+
+Response
+```json
+[
+    {
+        "id": 1,
+        "email": "user1@user.com",
+        "name": "User 1",
+        "phone": "0121234567",
+        "roles": [
+            "USER"
+        ]
+    }
+]
+```
+
+#### Get User - GET /users/:id
+
+Response
+```json
+{
+  "id": 1,
+  "email": "user1@user.com",
+  "name": "User 1",
+  "phone": "0121234567",
+  "roles": [
+    "USER"
+  ]
+}
+```
+#### Update User - PATCH /users/:id
+
+Request
+```json
+{
+	"name": "Updated User 1",
+}
+```
+
+Response
+```json
+{
+  "id": 1,
+  "email": "user1@user.com",
+  "name": "Updated User 1",
+  "phone": "0121234567",
+  "roles": [
+    "USER"
+  ]
+}
+```
+
+#### Remove User - DELETE /users/:id
+
+Response
+```json
+{
+    "id": 1
+}
+```
+
 ## Stay in touch
 
 - Author - [Farhan Syah](https://github.com/farhan-syah)
