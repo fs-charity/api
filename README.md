@@ -18,6 +18,10 @@ For this project, we will build and deploy a NestJS application that will be use
 $ yarn install
 ```
 
+## Folder Structure
+
+refer to [structure.md](structure.md)
+
 ## Environment Setup
 
 Create a .env file. You can refer to the .env.example, but populate it with your own values
